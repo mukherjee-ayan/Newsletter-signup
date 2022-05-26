@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const request = require("request");
 const https = require("https");
 const client = require("@mailchimp/mailchimp_marketing");
+const credentials = require(__dirname + "/credentials.js");
 
 const app = express();
 app.use(express.static("public")); // public folder allows our server to serve up static files like styles.css, image files etc.
@@ -30,11 +31,11 @@ app.post("/", function(req, res){
 
   const jsonData = JSON.stringify(data);
 
-  const url = "https://us14.api.mailchimp.com/3.0/lists/5eed24e3ca";
+  const url = credentials.getUrl() + credentials.getListId();
 
   const options = {
     method: "POST",
-    auth: "Ayan:e67bfe9bf7a26b8f7c09cf38028456b0-us14"
+    auth: "Ayan:" + credentials.getApiKey()
   };
 
   const request = https.request(url, options, function(response){
@@ -54,7 +55,7 @@ app.post("/", function(req, res){
   request.end();
 
   // client.setConfig({
-  //   apiKey: "e67bfe9bf7a26b8f7c09cf38028456b0-us14",
+  //   apiKey: credentials.getApiKey(),
   //   server: "us14",
   // });
   //
@@ -62,7 +63,7 @@ app.post("/", function(req, res){
   //
   //   try {
   //
-  //     const response = await client.lists.batchListMembers("5eed24e3ca", {
+  //     const response = await client.lists.batchListMembers(credentials.getListId(), {
   //       members: [
   //         {
   //           email_address: email,
@@ -99,7 +100,3 @@ app.get("/", function(req, res){
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server is running.");
 });
-
-
-// API Key: e67bfe9bf7a26b8f7c09cf38028456b0-us14
-// ListId: 5eed24e3ca
